@@ -10,21 +10,25 @@
 #-------------------------------------------------------------------------------
 import re
 
+
 def get_list():
-    '''возвращает вывод xe vm-list'''
+    '''get list of VM by open file with output xe vm-list'''
     plain_list = open('list','r')
     return plain_list.readlines()
 
 
 
 def main():
-    '''основное тело'''
+    '''main unit'''
     p_list = get_list()
-    #print(p_list) #вывод списка машин
+    l = print(len(p_list))
+
     uuid = re.compile('uuid', re.IGNORECASE)
     name = re.compile('name-label', re.IGNORECASE)
     state = re.compile('power-state',re.IGNORECASE)
-    print(uuid,end='')
+
+    print(p_list[0])
+
 
 
 main()
