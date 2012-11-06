@@ -27,7 +27,7 @@ def main():
     name = re.compile('name-label', re.IGNORECASE)
     state = re.compile('power-state',re.IGNORECASE)
 
-    print(p_list[0])
+    print(p_list[1])
 
 
 
