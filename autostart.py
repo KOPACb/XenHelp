@@ -9,6 +9,7 @@
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
 import re
+from itertools import tee
 
 
 def get_list():
@@ -16,7 +17,14 @@ def get_list():
     plain_list = open('list','r')
     return plain_list.readlines()
 
-
+def readlog():
+    for line in open('list'):
+        try:
+            x, value = line.split(':')
+        except ValueError: continue
+        yield value.strip()
+    result = tee(readlog(), 3)
+    return result
 
 def main():
     '''main unit'''
@@ -27,7 +35,8 @@ def main():
     name = re.compile('name-label', re.IGNORECASE)
     state = re.compile('power-state',re.IGNORECASE)
 
-    print(p_list[1])
+    log = readlog()
+    log[1]
 
 
 
