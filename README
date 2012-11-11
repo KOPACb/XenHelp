@@ -1,0 +1,6 @@
+THIS IS NOT WORKING YET
+This is utils for automatization Citrix XEN server.
+
+First of them - autostart.py
+	It will make autostart your vm`s with tag autostart
+	
