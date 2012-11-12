@@ -10,6 +10,7 @@
 #-------------------------------------------------------------------------------
 import re
 from itertools import tee
+import time
 
 
 def get_list():
@@ -17,10 +18,16 @@ def get_list():
     plain_list = open('list','r')
     return plain_list.readlines()
 
+def get_plain_detail(uuid):
+    plain_detail = open(uuid,'r')
+    return plain_detail.readlines()
+
 def get_detail(uuid):
     '''get details of VM
+    OUTPUT is
+    {uuid:uuid, name=name, state:state, autostart=tag_autostart_bool, backup:tag_backup_bool, migrate:migrate_tag_bool, tags:list_of_tags}
     '''
-    plain_detail = open(uuid,'r')
+    plain_detail = get_plain_detail(uuid)
     autostart = False
     backup = False
     migrate = False
@@ -45,24 +52,22 @@ def get_detail(uuid):
     result = dict(uuid=uuid, name=name, state=state, autostart=autostart, backup=backup, migrate=migrate, tags=tags)
     return result
 
-
-
-def readlog(p_list):
-    '''format list vms with uuid:%uuid,name:%name,state:%state
-    '''
-    for line in p_list:
+def get_boot_state(uuid):
+    plain_detail = get_plain_detail(uuid)
+    for string in plain_detail:
         try:
-            x, value = line.split(':')
-            if x.find('uuid') != -1:
-                value = 'uuid:' + value.strip()
-            if x.find('state') != -1:
-                value = 'state:' + value.strip()
-            if x.find('name') != -1:
-                value = 'name:' + value.strip()
+            splitted = string.split(':')
+            if 'networks' in splitted[0]:
+                if 'ip' in splitted[1]:
+                    return True
+                    break
+                else:
+                    return False
+                    break
         except ValueError: continue
-        yield value.strip()
-    result = readlog(p_list)
-    return result
+    return False
+
+
 
 def read_uuid(p_list):
     '''
@@ -82,6 +87,11 @@ def read_uuid(p_list):
 
 
 def formatting(p_list):
+    '''
+    compare UUID`s with needed parameters
+    output as DICT of DICTS
+    {uuid:{params}}
+    '''
     i = 0
     lst = {}
     for uuid in p_list:
@@ -91,14 +101,28 @@ def formatting(p_list):
         except ValueError: continue
 
     return lst
+
+def start(uuid):
+    print('starting VM = ')
+
+def wait_up(uuid):
+    while not(get_boot_state(uuid)):
+            time.sleep(10)
+
+
 def main():
     '''main unit'''
-    p_list = get_list()
-    log = list(read_uuid(p_list))
-    print(log)
-    data = formatting(log)
-    print(type(data))
-    print(data)
+    p_list = get_list()                     #get VM_list
+    log = list(read_uuid(p_list))           #make uuid list
+    data = formatting(log)                  #make parameters for working with
+    for uuid in data:
+        try:
+            if data[uuid]['state'] == 'halted' and data[uuid]['autostart'] == True:
+                start(uuid)
+                print('start called uuid:', uuid, 'name:', data[uuid]['name'])
+                wait_up(uuid)
+            else: continue
+        except ValueError:continue
 
 main()
 

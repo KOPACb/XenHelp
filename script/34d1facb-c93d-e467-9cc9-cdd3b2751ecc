@@ -64,14 +64,14 @@ uuid ( RO)                          : 34d1facb-c93d-e467-9cc9-cdd3b2751ecc
          PV-drivers-up-to-date ( RO): <not in database>
                         memory (MRO): <not in database>
                          disks (MRO): <not in database>
-                      networks (MRO): <not in database>
+                      networks (MRO): 0/ip: 192.168.1.203
                          other (MRO): <not in database>
                           live ( RO): <not in database>
     guest-metrics-last-updated ( RO): <not in database>
                    cooperative ( RO): true
              protection-policy ( RW): <not in database>
          is-snapshot-from-vmpp ( RO): false
-                          tags (SRW):
+                          tags (SRW): autostart
                      appliance ( RW): <not in database>
                    start-delay ( RW): 0
                 shutdown-delay ( RW): 0
