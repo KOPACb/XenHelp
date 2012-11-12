@@ -73,17 +73,16 @@ def read_uuid(p_list):
     '''
     get list of uuid`s
     '''
+    uuids = []
     for line in p_list:
         try:
             x, value = line.split(':')
             if x.find('uuid') != -1:
-                uuid = value.strip()
+                uuids.append(value.strip())
             else:
                 continue
         except ValueError: continue
-        yield uuid
-    result = read_uuid(p_list)
-    return result
+    return uuids
 
 
 def formatting(p_list):
@@ -108,7 +107,7 @@ def start(uuid):
 def wait_up(uuid):
     while not(get_boot_state(uuid)):
             time.sleep(10)
-
+    return 'started'
 
 def main():
     '''main unit'''
@@ -119,8 +118,8 @@ def main():
         try:
             if data[uuid]['state'] == 'halted' and data[uuid]['autostart'] == True:
                 start(uuid)
-                print('start called uuid:', uuid, 'name:', data[uuid]['name'])
-                wait_up(uuid)
+                print('start called for uuid:', uuid, 'name:', data[uuid]['name'])
+                print(wait_up(uuid))
             else: continue
         except ValueError:continue
 
