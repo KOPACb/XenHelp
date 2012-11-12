@@ -83,9 +83,10 @@ def read_uuid(p_list):
 
 def formatting(p_list):
     i = 0
+    lst = {}
     for uuid in p_list:
         try:
-            lst = dict(uuid=get_detail(uuid))
+            lst[uuid] = get_detail(uuid)
             i += 1
         except ValueError: continue
 
@@ -96,8 +97,8 @@ def main():
     log = list(read_uuid(p_list))
     print(log)
     data = formatting(log)
+    print(type(data))
     print(data)
-
 
 main()
 
