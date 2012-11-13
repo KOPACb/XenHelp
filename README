@@ -6,4 +6,5 @@ First of them - autostart.py
 	add autostart.py to cron
 	It will be start vm`s one by one.
 	next vm will starting after previous will up it network interface. 
-	I made it cause on NAS 1 VM can boot 10-15 mins, but when onetime boot more than 2 it can take up to 1 hour
+	I made it cause on NAS 1 VM can boot 10-15 mins, 
+	but when onetime boot more than 2 it can take up to 1 hour
