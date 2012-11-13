@@ -10,20 +10,35 @@
 #-------------------------------------------------------------------------------
 import re
 from itertools import tee
-import os
+import subprocess
 import time
 
 
 def get_list():
     '''get list of VM by open file with output xe vm-list'''
     #plain_list = open('list','r')
-    plain_list = os.system('/usr/bin/xe vm-list')
-    return plain_list.readlines()
+    (plain_list, err)= subprocess.Popen(['/usr/bin/xe', 'vm-list'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT).communicate()
+    lst = []
+    l = ''
+    for line in plain_list:
+        l = l + line
+        if line == '\n':
+                lst.append(l)
+    return lst
 
 def get_plain_detail(uuid):
     #plain_detail = open(uuid,'r')
-    plain_detail = os.system('/usr/bin/xe vm-param-list uuid=', uuid)
-    return plain_detail.readlines()
+    uuid =  'uuid=' + uuid
+    param = ['/usr/bin/xe', 'vm-param-list', uuid]
+    (plain_detail, err) = subprocess.Popen(param ,stdout=subprocess.PIPE,stderr=subprocess.STDOUT).communicate()
+    lst = []
+    l = ''
+    for line in plain_detail:
+        l = l + line
+        if line == '\n':
+                lst.append(l)
+    return plain_detail
+
 
 def get_detail(uuid):
     '''get details of VM
@@ -117,6 +132,7 @@ def main():
     p_list = get_list()                     #get VM_list
     log = list(read_uuid(p_list))           #make uuid list
     data = formatting(log)                  #make parameters for working with
+
     for uuid in data:
         try:
             if data[uuid]['state'] == 'halted' and data[uuid]['autostart'] == True:
