@@ -18,7 +18,7 @@ import time
 
 pidfile = "/tmp/autostart.pid"
 
-def check_pid(pid):
+def check_pid(pid):        #habr_user glebkk TY
     """ Check For the existence of a unix pid. """
     try:
       os.kill(pid, 0)
@@ -42,7 +42,7 @@ def get_list():
     return lst
 
 def get_plain_detail(uuid):
-    #plain_detail = open(uuid,'r')
+    '''get xe vm-param list '''
     uuid =  'uuid=' + uuid
     param = ['/usr/bin/xe', 'vm-param-list', uuid]
     (plain_detail, err) = subprocess.Popen(param ,stdout=subprocess.PIPE,stderr=subprocess.STDOUT).communicate()
@@ -57,7 +57,7 @@ def get_plain_detail(uuid):
 
 
 def get_detail(uuid):
-    '''get details of VM
+    '''process xe vm-param-list option
     OUTPUT is
     {uuid:uuid, name=name, state:state, autostart=tag_autostart_bool, backup:tag_backup_bool, migrate:migrate_tag_bool, tags:list_of_tags}
     '''
