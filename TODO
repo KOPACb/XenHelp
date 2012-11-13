@@ -1,0 +1,24 @@
+Autostart.py - add syslog ( or any log, lol )
+Autostart.py - make check for time of starting. now it will start only one vm at one time.
+			   if network interface will not go up - it will wait until it up.
+Backup.py - start work on to
+Migrate.py - serach farm for tests and start work on to
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Refactor autostart.py
