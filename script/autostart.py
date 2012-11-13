@@ -10,16 +10,19 @@
 #-------------------------------------------------------------------------------
 import re
 from itertools import tee
+import os
 import time
 
 
 def get_list():
     '''get list of VM by open file with output xe vm-list'''
-    plain_list = open('list','r')
+    #plain_list = open('list','r')
+    plain_list = os.system('/usr/bin/xe vm-list')
     return plain_list.readlines()
 
 def get_plain_detail(uuid):
-    plain_detail = open(uuid,'r')
+    #plain_detail = open(uuid,'r')
+    plain_detail = os.system('/usr/bin/xe vm-param-list uuid=', uuid)
     return plain_detail.readlines()
 
 def get_detail(uuid):
