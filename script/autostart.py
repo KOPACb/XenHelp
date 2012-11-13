@@ -10,20 +10,35 @@
 #-------------------------------------------------------------------------------
 import re
 from itertools import tee
+import sys
 import subprocess
+import os
 import time
 
+
+pidfile = "/tmp/autostart.pid"
+
+def check_pid(pid):
+    """ Check For the existence of a unix pid. """
+    try:
+      os.kill(pid, 0)
+    except OSError:
+      return False
+    else:
+      return True
 
 def get_list():
     '''get list of VM by open file with output xe vm-list'''
     #plain_list = open('list','r')
-    (plain_list, err)= subprocess.Popen(['/usr/bin/xe', 'vm-list'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT).communicate()
+    vm_list = ['/usr/bin/xe', 'vm-list']
+    (plain_list, err) = subprocess.Popen(vm_list,stdout=subprocess.PIPE,stderr=subprocess.STDOUT).communicate()
     lst = []
     l = ''
     for line in plain_list:
         l = l + line
         if line == '\n':
                 lst.append(l)
+                l = ''
     return lst
 
 def get_plain_detail(uuid):
@@ -37,7 +52,8 @@ def get_plain_detail(uuid):
         l = l + line
         if line == '\n':
                 lst.append(l)
-    return plain_detail
+                l = ''
+    return lst
 
 
 def get_detail(uuid):
@@ -49,6 +65,9 @@ def get_detail(uuid):
     autostart = False
     backup = False
     migrate = False
+    name = ''
+    state = ''
+    tags = ''
     for line in plain_detail:
         try:
             field , value = line.split(':')
@@ -120,7 +139,10 @@ def formatting(p_list):
     return lst
 
 def start(uuid):
-    print('starting VM = ')
+    uuid =  'uuid=' + uuid
+    param = ['/usr/bin/xe', 'vm-start', uuid]
+    (out, err) = subprocess.Popen(param ,stdout=subprocess.PIPE,stderr=subprocess.STDOUT).communicate()
+    return out
 
 def wait_up(uuid):
     while not(get_boot_state(uuid)):
@@ -129,6 +151,17 @@ def wait_up(uuid):
 
 def main():
     '''main unit'''
+    pid = -1
+    if os.path.isfile(pidfile):
+        pid = long(open(pidfile, 'r').read())
+    if check_pid(pid):
+      print "%s already exists, exiting" % pidfile
+      sys.exit()
+    pid = str(os.getpid())
+    file(pidfile, 'w').write(pid)
+    # actual code
+
+
     p_list = get_list()                     #get VM_list
     log = list(read_uuid(p_list))           #make uuid list
     data = formatting(log)                  #make parameters for working with
@@ -141,6 +174,11 @@ def main():
                 print(wait_up(uuid))
             else: continue
         except ValueError:continue
+
+
+    # finish
+    os.unlink(pidfile)
+
 
 main()
 
