@@ -1,11 +1,14 @@
 This is utils for automatization Citrix XEN server.
 
-First of them - autostart.py
+autostart.py
 	It will make autostart your vm`s with tag autostart
 	It will be start vm`s one by one.
 	next vm will starting after previous will up it network interface. 
 	I made it cause on NAS 1 VM can boot 10-15 mins, 
 	but when onetime boot more than 2 it can take up to 1 hour
+
+del_template.sh
+	It will help you to delete templates.
 
 INSTALL
 	Add tag 'autostart' to vm`s you want to start
